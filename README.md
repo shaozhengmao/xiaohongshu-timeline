@@ -42,7 +42,7 @@
 
 1. 克隆或下载本仓库到本地：
    ```bash
-   git clone https://github.com/<你的用户名>/xiaohongshu-timeline.git
+   git clone https://github.com/shaozhengmao/xiaohongshu-timeline.git
    ```
 2. 打开 Chrome，进入 `chrome://extensions/`。
 3. 右上角打开 **开发者模式（Developer mode）**。
