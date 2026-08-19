@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', Roboto, Arial, sans-serif">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="1000" height="560" fill="#f7f7f7"/>
+  <text x="40" y="54" font-size="32" font-weight="700" fill="#222">小红书时间线 · 效果预览</text>
+  <text x="40" y="84" font-size="15" fill="#888">把个人主页的瀑布流，重排成按发布时间倒序的时间线</text>
+
+  <!-- LEFT: grid card -->
+  <rect x="40" y="118" width="440" height="402" rx="16" fill="#ffffff" stroke="#eeeeee" filter="url(#shadow)"/>
+  <text x="64" y="154" font-size="17" font-weight="700" fill="#333">默认网格（原版）</text>
+  <g>
+    <rect x="64"  y="178" width="108" height="92"  rx="8" fill="#ffd6dd"/>
+    <rect x="196" y="178" width="108" height="64"  rx="8" fill="#ffe0b2"/>
+    <rect x="328" y="178" width="108" height="100" rx="8" fill="#c8e6c9"/>
+    <rect x="64"  y="282" width="108" height="64"  rx="8" fill="#b3e5fc"/>
+    <rect x="196" y="254" width="108" height="100" rx="8" fill="#e1bee7"/>
+    <rect x="328" y="290" width="108" height="56"  rx="8" fill="#fff9c4"/>
+    <rect x="64"  y="358" width="108" height="80"  rx="8" fill="#f8bbd0"/>
+    <rect x="196" y="366" width="108" height="72"  rx="8" fill="#d1c4e9"/>
+    <rect x="328" y="358" width="108" height="60"  rx="8" fill="#dcedc8"/>
+  </g>
+
+  <!-- RIGHT: timeline card -->
+  <rect x="520" y="118" width="440" height="402" rx="16" fill="#ffffff" stroke="#eeeeee" filter="url(#shadow)"/>
+  <text x="544" y="154" font-size="17" font-weight="700" fill="#333">时间线（本扩展）</text>
+
+  <!-- month group 1 -->
+  <rect x="544" y="172" width="150" height="26" rx="6" fill="#ff2442"/>
+  <text x="556" y="190" font-size="14" font-weight="700" fill="#ffffff">2026年8月 (3)</text>
+  <g>
+    <rect x="544" y="210" width="44" height="34" rx="6" fill="#ffd6dd"/>
+    <rect x="598" y="216" width="300" height="10" rx="5" fill="#e0e0e0"/>
+    <rect x="598" y="232" width="160" height="8" rx="4" fill="#eeeeee"/>
+    <text x="824" y="234" font-size="11" fill="#999">08-28</text>
+
+    <rect x="544" y="256" width="44" height="34" rx="6" fill="#ffe0b2"/>
+    <rect x="598" y="262" width="280" height="10" rx="5" fill="#e0e0e0"/>
+    <rect x="598" y="278" width="140" height="8" rx="4" fill="#eeeeee"/>
+    <text x="824" y="280" font-size="11" fill="#999">08-15</text>
+
+    <rect x="544" y="302" width="44" height="34" rx="6" fill="#c8e6c9"/>
+    <rect x="598" y="308" width="310" height="10" rx="5" fill="#e0e0e0"/>
+    <rect x="598" y="324" width="150" height="8" rx="4" fill="#eeeeee"/>
+    <text x="824" y="326" font-size="11" fill="#999">08-02</text>
+  </g>
+
+  <!-- month group 2 -->
+  <rect x="544" y="356" width="150" height="26" rx="6" fill="#ff2442"/>
+  <text x="556" y="374" font-size="14" font-weight="700" fill="#ffffff">2026年7月 (4)</text>
+  <g>
+    <rect x="544" y="394" width="44" height="34" rx="6" fill="#b3e5fc"/>
+    <rect x="598" y="400" width="290" height="10" rx="5" fill="#e0e0e0"/>
+    <rect x="598" y="416" width="150" height="8" rx="4" fill="#eeeeee"/>
+    <text x="824" y="418" font-size="11" fill="#999">07-20</text>
+
+    <rect x="544" y="440" width="44" height="34" rx="6" fill="#e1bee7"/>
+    <rect x="598" y="446" width="300" height="10" rx="5" fill="#e0e0e0"/>
+    <rect x="598" y="462" width="140" height="8" rx="4" fill="#eeeeee"/>
+    <text x="824" y="464" font-size="11" fill="#999">07-08</text>
+  </g>
+
+  <!-- floating panel overlay -->
+  <rect x="792" y="300" width="168" height="180" rx="12" fill="#ffffff" stroke="#eeeeee" filter="url(#shadow)"/>
+  <text x="812" y="330" font-size="15" font-weight="700" fill="#333">小红书时间线</text>
+  <rect x="812" y="346" width="64" height="26" rx="6" fill="#f2f2f2"/>
+  <text x="844" y="363" font-size="12" fill="#333" text-anchor="middle">网格</text>
+  <rect x="884" y="346" width="64" height="26" rx="6" fill="#ff2442"/>
+  <text x="916" y="363" font-size="12" fill="#ffffff" text-anchor="middle">时间线</text>
+  <line x1="812" y1="384" x2="936" y2="384" stroke="#f0f0f0"/>
+  <text x="812" y="408" font-size="12" fill="#888">时间</text>
+  <rect x="848" y="398" width="88" height="22" rx="5" fill="#fafafa" stroke="#dddddd"/>
+  <text x="892" y="413" font-size="11" fill="#888" text-anchor="middle">全部时间</text>
+  <text x="812" y="452" font-size="11" fill="#999">已识别 12 篇</text>
+</svg>

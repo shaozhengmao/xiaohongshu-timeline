@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "小红书时间线",
+  "version": "0.2.6",
+  "description": "把小红书个人主页的笔记按发布时间排成时间线，按月分组、支持时间筛选",
+  "permissions": ["activeTab"],
+  "host_permissions": [
+    "*://www.xiaohongshu.com/user/profile/*",
+    "*://xiaohongshu.com/user/profile/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://www.xiaohongshu.com/user/profile/*",
+        "*://xiaohongshu.com/user/profile/*"
+      ],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "world": "MAIN",
+      "matches": [
+        "*://www.xiaohongshu.com/user/profile/*",
+        "*://xiaohongshu.com/user/profile/*"
+      ],
+      "js": ["inject.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "小红书时间线"
+  }
+}

@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>小红书布局助手 · 模拟效果（时间范围 + 话题筛选）</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f7f7f7;
+    color: #333;
+  }
+  /* 顶部用户头（模拟小红书主页） */
+  .profile {
+    background: #fff;
+    max-width: 1000px;
+    margin: 20px auto 0;
+    padding: 24px;
+    border-radius: 12px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  .avatar {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, #ff2442, #ff7a90);
+    flex-shrink: 0;
+  }
+  .profile h2 { margin: 0 0 6px; font-size: 20px; }
+  .profile p { margin: 0; color: #888; font-size: 13px; }
+  .stats { display: flex; gap: 24px; margin-top: 10px; font-size: 13px; }
+  .stats b { font-size: 16px; display: block; }
+
+  /* 浮窗（布局助手） */
+  .panel {
+    position: fixed; top: 90px; right: 24px; z-index: 999;
+    background: #fff; border: 1px solid #eee; border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: 12px 14px; font-size: 13px;
+    min-width: 168px;
+  }
+  .panel .title { font-weight: 700; margin-bottom: 8px; }
+  .panel .btns { display: flex; gap: 6px; margin-bottom: 8px; }
+  .panel button.mode {
+    border: 1px solid #ddd; background: #f7f7f7; border-radius: 6px;
+    padding: 4px 10px; cursor: pointer; font-size: 12px; color: #333;
+  }
+  .panel button.mode.active { background: #ff2442; color: #fff; border-color: #ff2442; }
+  .panel .filter {
+    border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0;
+    padding: 10px 0; margin-bottom: 8px;
+  }
+  .panel .frow { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .panel .frow:last-child { margin-bottom: 0; }
+  .panel .flabel { color: #888; font-size: 12px; width: 28px; flex-shrink: 0; }
+  .panel select {
+    flex: 1; border: 1px solid #ddd; border-radius: 6px; padding: 4px 6px;
+    font-size: 12px; font-family: inherit; color: #333; background: #fff; max-width: 112px;
+  }
+  .panel .custom { display: flex; align-items: center; gap: 4px; margin: -2px 0 10px 36px; }
+  .panel .custom input[type=date] {
+    flex: 1; border: 1px solid #ddd; border-radius: 6px; padding: 3px 5px;
+    font-size: 11px; font-family: inherit; color: #333; min-width: 0;
+  }
+  .panel .tilde { color: #999; font-size: 12px; }
+  .panel .actions { margin-bottom: 8px; }
+  .panel #autoload {
+    width: 100%; border: 1px solid #ff2442; background: #fff5f6; color: #ff2442;
+    border-radius: 6px; padding: 6px; cursor: pointer; font-size: 12px; font-family: inherit;
+  }
+  .panel #autoload:hover { background: #ffe9ec; }
+  .panel .count { color: #999; font-size: 11px; }
+  .panel[data-mode="grid"] .filter,
+  .panel[data-mode="grid"] .actions { display: none; }
+
+  /* 默认网格（模拟原版瀑布流） */
+  .grid {
+    max-width: 1000px; margin: 20px auto; padding: 0 10px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  }
+  .card {
+    background: #fff; border-radius: 10px; overflow: hidden; font-size: 13px;
+  }
+  .card .cover { height: 160px; }
+  .card .body { padding: 10px; }
+  .card .body .t { font-weight: 600; line-height: 1.4; margin-bottom: 6px; }
+  .card .body .m { color: #999; font-size: 12px; display: flex; justify-content: space-between; }
+
+  /* 重排根容器 */
+  .layout-root { max-width: 900px; margin: 20px auto; padding: 0 20px 40px; }
+  .group { margin-bottom: 28px; }
+  .group-title {
+    font-size: 18px; font-weight: 700; color: #222; margin-bottom: 12px;
+    padding-bottom: 6px; border-bottom: 2px solid #ff2442;
+  }
+  .group-title small { font-size: 13px; color: #999; font-weight: 400; margin-left: 6px; }
+  .list { display: flex; flex-direction: column; gap: 14px; }
+  .note {
+    display: flex; gap: 14px; padding: 12px; border-radius: 12px; background: #fff;
+    border: 1px solid #eee; text-decoration: none; color: inherit;
+    transition: box-shadow .2s, transform .2s;
+  }
+  .note:hover { box-shadow: 0 4px 14px rgba(0,0,0,.08); transform: translateY(-1px); }
+  .note .note-cover {
+    width: 140px; height: 100px; flex-shrink: 0; border-radius: 8px;
+    background-size: cover; background-position: center; background-color: #f5f5f5;
+  }
+  .note .note-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .note .note-title { font-size: 15px; font-weight: 600; color: #111; line-height: 1.4; }
+  .note .note-desc { font-size: 13px; color: #666; line-height: 1.5; }
+  .note .note-meta { font-size: 12px; color: #999; display: flex; gap: 12px; }
+  .note .note-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .note .tag { background: #f2f2f2; color: #555; padding: 2px 8px; border-radius: 12px; font-size: 11px; }
+
+  .hide { display: none !important; }
+  .hint { max-width: 900px; margin: 0 auto 40px; color: #999; font-size: 12px; }
+  .empty { color: #999; font-size: 14px; text-align: center; padding: 60px 0; }
+</style>
+</head>
+<body>
+
+<div class="profile">
+  <div class="avatar"></div>
+  <div>
+    <h2>的职场笔记</h2>
+    <p>职场避坑 · 求职准备 · 副业探索</p>
+    <div class="stats">
+      <div><b id="statNotes">12</b>笔记</div>
+      <div><b>3.2万</b>粉丝</div>
+      <div><b>5.6万</b>获赞</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel" data-mode="grid">
+  <div class="title">布局助手</div>
+  <div class="btns">
+    <button class="mode active" data-mode="grid">网格</button>
+    <button class="mode" data-mode="timeline">时间线</button>
+    <button class="mode" data-mode="topics">话题</button>
+  </div>
+  <div class="filter">
+    <div class="frow">
+      <span class="flabel">时间</span>
+      <select id="range">
+        <option value="all">全部时间</option>
+        <option value="3m">近3个月</option>
+        <option value="6m">近6个月</option>
+        <option value="year">今年</option>
+        <option value="custom">自定义…</option>
+      </select>
+    </div>
+    <div class="custom hide" id="custom">
+      <input type="date" id="from" /> <span class="tilde">~</span> <input type="date" id="to" />
+    </div>
+    <div class="frow">
+      <span class="flabel">话题</span>
+      <select id="topic"><option value="ALL">全部话题</option></select>
+    </div>
+  </div>
+  <div class="actions">
+    <button id="autoload">自动加载更多</button>
+  </div>
+  <div class="count">已识别 <span id="count">12</span> 篇 · 话题 <span id="topicCount">0</span> 个</div>
+</div>
+
+<!-- 原版网格 -->
+<div class="grid" id="grid"></div>
+
+<!-- 重排视图 -->
+<div class="layout-root hide" id="layoutRoot"></div>
+
+<div class="hint" id="hint">右上角浮窗：先选「时间线」或「话题」，再用「时间 / 话题」两个下拉组合筛选。点「自动加载更多」模拟小红书越滑越加载、把更老的笔记拉进来。</div>
+
+<script>
+// 样本：话题现在能被识别（真实扩展从 tag_list + 标题 # 提取）
+const notes = [
+  { title: "面试被问'你的缺点是什么'怎么答", desc: "别真说缺点，用'成长型缺点+改进动作'结构，附模板", time: "2026-07-28", likes: 2100, topics: ["职场避坑"], cover: "linear-gradient(135deg,#ff9a9e,#fecfef)" },
+  { title: "工作居住证断了会怎样", desc: "续签要连续在京参保+应税收入≥14k，挂靠别用灵活就业", time: "2026-07-15", likes: 980, topics: ["北京落户","职场避坑"], cover: "linear-gradient(135deg,#a1c4fd,#c2e9fb)" },
+  { title: "定价系统平台化踩坑总结", desc: "多套烟囱统一成配置化平台，六步流程+三大域模型", time: "2026-06-30", likes: 1530, topics: ["定价架构"], cover: "linear-gradient(135deg,#84fab0,#8fd3f4)" },
+  { title: "结算报账系统怎么治理业财差异", desc: "百万级差异靠防腐层+AI影响评估+知识库兜底", time: "2026-06-12", likes: 760, topics: ["结算架构","定价架构"], cover: "linear-gradient(135deg,#fbc2eb,#a6c1ee)" },
+  { title: "副业第一步：别上来就做App", desc: "轻量CLI/skill路线，先验证再投入，成本最低", time: "2026-05-20", likes: 3400, topics: ["副业探索"], cover: "linear-gradient(135deg,#fddb92,#d1fdff)" },
+  { title: "英文搜索站+AdSense跑通记录", desc: "evergreen内容+Cloudflare Pages自定义域名，睡后收入起点", time: "2026-05-08", likes: 2780, topics: ["副业探索","AdSense"], cover: "linear-gradient(135deg,#9890e3,#b1f4cf)" },
+  { title: "流量回放系统从0到1", desc: "基于阿里Sandbox二次开发，零侵入录制回放+时间倒流", time: "2026-04-18", likes: 1200, topics: ["质量工程"], cover: "linear-gradient(135deg,#96fbc4,#f9f586)" },
+  { title: "AI Agent面试怎么准备", desc: "把项目文档当上下文，分层STAR讲清因果链", time: "2026-04-02", likes: 1890, topics: ["求职准备","AI"], cover: "linear-gradient(135deg,#ffecd2,#fcb69f)" },
+  { title: "大厂社招抓取脚本分享", desc: "curl首页→找JS→直连JSON，绕过SPA省事", time: "2026-03-25", likes: 1560, topics: ["求职准备"], cover: "linear-gradient(135deg,#a18cd1,#fbc2eb)" },
+  { title: "为什么我不建议应届生进外包", desc: "成长曲线被锁死，三年后差距拉开", time: "2026-03-10", likes: 4200, topics: ["职场避坑"], cover: "linear-gradient(135deg,#ff9a9e,#fad0c4)" },
+  { title: "Embedding才是AI Harness分水岭", desc: "高频检索用向量，一次性判断才用LLM，边际成本趋零", time: "2026-02-14", likes: 2300, topics: ["AI","副业探索"], cover: "linear-gradient(135deg,#cfd9df,#e2ebf0)" },
+  { title: "简历里最值钱的三段经历", desc: "定价+结算+支付，按含金量排序讲", time: "2026-01-30", likes: 3100, topics: ["求职准备","职场避坑"], cover: "linear-gradient(135deg,#f6d365,#fda085)" }
+];
+
+// “自动加载更多”会逐批把更老的笔记拉进来（模拟小红书无限滚动）
+const moreNotes = [
+  { title: "2025年终复盘：我的三条主线", desc: "定价/结算/求职，一条线都没断", time: "2025-12-20", likes: 1800, topics: ["职场避坑"], cover: "linear-gradient(135deg,#d4fc79,#96e6a1)" },
+  { title: "从0搭流量回放平台的坑", desc: "Mock下游RPC是核心，别一上来就全链路", time: "2025-11-11", likes: 900, topics: ["质量工程"], cover: "linear-gradient(135deg,#84fab0,#8fd3f4)" },
+  { title: "第一次带团队踩的雷", desc: "授权不够、复盘流于形式", time: "2025-10-02", likes: 2600, topics: ["职场避坑","管理"], cover: "linear-gradient(135deg,#ff9a9e,#fecfef)" },
+  { title: "副业第二年：收入结构变了", desc: "广告+资产型被动收入开始跑", time: "2025-08-15", likes: 3100, topics: ["副业探索","AdSense"], cover: "linear-gradient(135deg,#fddb92,#d1fdff)" },
+  { title: "定价测算系统上线记", desc: "单城测算从1天压到20分钟", time: "2025-06-30", likes: 1400, topics: ["定价架构"], cover: "linear-gradient(135deg,#a1c4fd,#c2e9fb)" },
+  { title: "求职心态：慢就是快", desc: "不海投，精准打大厂同级岗", time: "2025-04-18", likes: 2200, topics: ["求职准备"], cover: "linear-gradient(135deg,#fbc2eb,#a6c1ee)" }
+];
+let moreIdx = 0;
+
+const grid = document.getElementById('grid');
+const layoutRoot = document.getElementById('layoutRoot');
+const hint = document.getElementById('hint');
+
+// 默认网格
+grid.innerHTML = notes.map(n => `
+  <div class="card">
+    <div class="cover" style="background:${n.cover}"></div>
+    <div class="body">
+      <div class="t">${n.title}</div>
+      <div class="m"><span>${n.time}</span><span>♥ ${n.likes}</span></div>
+    </div>
+  </div>
+`).join('');
+
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function getNoteDate(n){ const [y,m,d]=n.time.split('-').map(Number); return new Date(y,m-1,d); }
+
+// ---- 筛选状态 ----
+let filterRange='all', filterFrom='', filterTo='', filterTopic='ALL', mode='grid';
+
+function inRange(date){
+  if(filterRange==='all') return true;
+  const now=new Date(2026,7,19); // 模拟“今天”
+  if(filterRange==='3m'){ const d=new Date(now); d.setMonth(d.getMonth()-3); return date>=d; }
+  if(filterRange==='6m'){ const d=new Date(now); d.setMonth(d.getMonth()-6); return date>=d; }
+  if(filterRange==='year'){ return date.getFullYear()===now.getFullYear(); }
+  if(filterRange==='custom'){
+    if(filterFrom && date < new Date(filterFrom+'T00:00:00')) return false;
+    if(filterTo && date > new Date(filterTo+'T23:59:59')) return false;
+    return true;
+  }
+  return true;
+}
+function getRawTopics(n){ return n.topics||[]; }
+function getFilteredNotes(){
+  return notes.filter(n=>{
+    const date=getNoteDate(n);
+    if(!inRange(date)) return false;
+    if(filterTopic!=='ALL'){
+      const raw=getRawTopics(n);
+      if(filterTopic==='UNCATEGORIZED'){ if(raw.length) return false; }
+      else if(!raw.includes(filterTopic)) return false;
+    }
+    return true;
+  });
+}
+
+function renderItem(n){
+  const tags=(n.topics||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('');
+  return `<a class="note" href="#" onclick="return false;">
+    <div class="note-cover" style="background:${n.cover}"></div>
+    <div class="note-body">
+      <div class="note-title">${esc(n.title)}</div>
+      <div class="note-desc">${esc(n.desc)}</div>
+      <div class="note-meta"><span>${n.time}</span><span>♥ ${n.likes}</span></div>
+      ${tags?`<div class="note-tags">${tags}</div>`:''}
+    </div>
+  </a>`;
+}
+
+function renderTimeline(){
+  const list=getFilteredNotes().slice().sort((a,b)=>b.time.localeCompare(a.time));
+  const groups={};
+  list.forEach(n=>{ const k=n.time.slice(0,7); (groups[k]=groups[k]||[]).push(n); });
+  const keys=Object.keys(groups).sort().reverse();
+  if(!keys.length) return '<div class="empty">当前筛选条件下没有笔记</div>';
+  return keys.map(m=>`<div class="group"><div class="group-title">${m} <small>(${groups[m].length})</small></div><div class="list">${groups[m].map(renderItem).join('')}</div></div>`).join('');
+}
+
+function renderTopics(){
+  const list=getFilteredNotes();
+  const groups={};
+  list.forEach(n=>{ (getRawTopics(n).length?getRawTopics(n):['未分类']).forEach(t=>{ (groups[t]=groups[t]||[]).push(n); }); });
+  const entries=Object.entries(groups).sort((a,b)=>b[1].length-a[1].length);
+  if(!entries.length) return '<div class="empty">当前筛选条件下没有笔记</div>';
+  return entries.map(([t,list2])=>`<div class="group"><div class="group-title">${esc(t)} <small>(${list2.length})</small></div><div class="list">${list2.map(renderItem).join('')}</div></div>`).join('');
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('panel').dataset.mode = m;
+  document.querySelectorAll('.panel button.mode').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));
+  if(m==='grid'){
+    grid.classList.remove('hide'); layoutRoot.classList.add('hide');
+    hint.textContent='原版瀑布流。点「时间线」或「话题」切换，再用时间/话题两个下拉组合筛选。';
+  }else{
+    grid.classList.add('hide'); layoutRoot.classList.remove('hide');
+    layoutRoot.innerHTML = m==='timeline'?renderTimeline():renderTopics();
+    const cond=[];
+    if(filterRange!=='all') cond.push(filterRange==='custom'?`${filterFrom||'…'}~${filterTo||'…'}`:({3:'近3个月',6:'近6个月',year:'今年'}[filterRange==='3m'?'3':filterRange==='6m'?'6':'year']||filterRange));
+    if(filterTopic!=='ALL') cond.push(filterTopic==='UNCATEGORIZED'?'未分类':filterTopic);
+    hint.textContent = (m==='timeline'?'按发布时间倒序、按月分组。':'按话题分组。') + (cond.length?` 当前筛选：${cond.join(' + ')}`:' 当前无筛选（全部）。');
+  }
+}
+
+function rebuildTopicOptions(){
+  const sel=document.getElementById('topic');
+  const freq=new Map(); let hasUn=false;
+  notes.forEach(n=>{ const raw=getRawTopics(n); if(!raw.length){hasUn=true;return;} raw.forEach(t=>freq.set(t,(freq.get(t)||0)+1)); });
+  const sorted=[...freq.entries()].sort((a,b)=>b[1]-a[1]);
+  let html='<option value="ALL">全部话题</option>';
+  if(hasUn) html+='<option value="UNCATEGORIZED">未分类</option>';
+  sorted.forEach(([t,c])=> html+=`<option value="${esc(t)}">${esc(t)} (${c})</option>`);
+  sel.innerHTML=html;
+  if([...sel.options].some(o=>o.value===filterTopic)) sel.value=filterTopic;
+  document.getElementById('topicCount').textContent=freq.size+(hasUn?0:0);
+}
+
+// 自动加载更多（模拟无限滚动）
+document.getElementById('autoload').addEventListener('click',()=>{
+  if(moreIdx>=moreNotes.length){ alert('已经到底啦，没有更多笔记了'); return; }
+  // 每批加载 2 篇更老的
+  for(let i=0;i<2 && moreIdx<moreNotes.length;i++) notes.push(moreNotes[moreIdx++]);
+  document.getElementById('count').textContent=notes.length;
+  document.getElementById('statNotes').textContent=notes.length;
+  rebuildTopicOptions();
+  if(mode!=='grid') setMode(mode);
+  hint.textContent='已模拟加载更老的笔记（自动滚动到底的效果）。现在去「时间」选「今年」或自定义早一点的区间，看是否能筛到 2025 的内容。';
+});
+
+// 绑定筛选控件
+document.getElementById('range').addEventListener('change',e=>{
+  filterRange=e.target.value;
+  document.getElementById('custom').classList.toggle('hide', filterRange!=='custom');
+  if(mode!=='grid') setMode(mode);
+});
+document.getElementById('from').addEventListener('change',e=>{ filterFrom=e.target.value; if(mode!=='grid') setMode(mode); });
+document.getElementById('to').addEventListener('change',e=>{ filterTo=e.target.value; if(mode!=='grid') setMode(mode); });
+document.getElementById('topic').addEventListener('change',e=>{ filterTopic=e.target.value; if(mode!=='grid') setMode(mode); });
+document.querySelectorAll('.panel button.mode').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+
+rebuildTopicOptions();
+document.getElementById('count').textContent=notes.length;
+</script>
+</body>
+</html>

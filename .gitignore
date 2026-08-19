@@ -1,0 +1,17 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Build / package artifacts
+*.zip
+*.crx
+*.pem
+
+# Local overrides
+*.local.js
+
+# Node tooling (if added later)
+node_modules/

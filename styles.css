@@ -1,0 +1,227 @@
+.xhs-layout-panel {
+  position: fixed !important;
+  top: 80px !important;
+  right: 20px !important;
+  z-index: 999999 !important;
+  background: #ffffff !important;
+  border: 1px solid #eeeeee !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  padding: 12px 14px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 13px !important;
+  color: #333333 !important;
+  min-width: 150px !important;
+  line-height: 1.4 !important;
+}
+
+.xhs-layout-title {
+  font-weight: 700 !important;
+  margin-bottom: 8px !important;
+}
+
+.xhs-layout-btns {
+  display: flex !important;
+  gap: 6px !important;
+  margin-bottom: 8px !important;
+}
+
+.xhs-layout-btns button {
+  border: 1px solid #dddddd !important;
+  background: #f7f7f7 !important;
+  border-radius: 6px !important;
+  padding: 4px 10px !important;
+  cursor: pointer !important;
+  font-size: 12px !important;
+  color: #333333 !important;
+  font-family: inherit !important;
+}
+
+.xhs-layout-btns button.active {
+  background: #ff2442 !important;
+  color: #ffffff !important;
+  border-color: #ff2442 !important;
+}
+
+.xhs-layout-count {
+  color: #999999 !important;
+  font-size: 11px !important;
+}
+
+.xhs-layout-panel[data-mode="default"] .xhs-layout-filter {
+  display: none !important;
+}
+
+.xhs-layout-filter {
+  border-top: 1px solid #f0f0f0 !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+  padding: 10px 0 !important;
+  margin-bottom: 8px !important;
+}
+
+.xhs-filter-custom.hide {
+  display: none !important;
+}
+
+.xhs-filter-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+.xhs-filter-row:last-child {
+  margin-bottom: 0 !important;
+}
+
+.xhs-filter-label {
+  color: #888888 !important;
+  font-size: 12px !important;
+  width: 28px !important;
+  flex-shrink: 0 !important;
+}
+
+.xhs-filter-row select {
+  flex: 1 !important;
+  border: 1px solid #dddddd !important;
+  border-radius: 6px !important;
+  padding: 4px 6px !important;
+  font-size: 12px !important;
+  font-family: inherit !important;
+  color: #333333 !important;
+  background: #ffffff !important;
+  max-width: 110px !important;
+}
+
+.xhs-filter-custom {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin: -2px 0 10px 36px !important;
+}
+
+.xhs-filter-custom input[type="date"] {
+  flex: 1 !important;
+  border: 1px solid #dddddd !important;
+  border-radius: 6px !important;
+  padding: 3px 5px !important;
+  font-size: 11px !important;
+  font-family: inherit !important;
+  color: #333333 !important;
+  min-width: 0 !important;
+}
+
+.xhs-tilde {
+  color: #999999 !important;
+  font-size: 12px !important;
+}
+
+.xhs-empty {
+  color: #999999 !important;
+  font-size: 14px !important;
+  text-align: center !important;
+  padding: 60px 0 !important;
+}
+
+.xhs-layout-root {
+  max-width: 900px !important;
+  margin: 20px auto !important;
+  padding: 0 20px 40px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+}
+
+/* 保留虚拟瀑布流的可测量尺寸，避免切回网格后卡片定位失效。 */
+.xhs-layout-grid-hidden {
+  position: absolute !important;
+  left: -100000px !important;
+  top: 0 !important;
+  width: 100% !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.xhs-group {
+  margin-bottom: 28px !important;
+}
+
+.xhs-timeline-sentinel {
+  height: 1px !important;
+}
+
+.xhs-group-title {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #222222 !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 6px !important;
+  border-bottom: 2px solid #ff2442 !important;
+}
+
+.xhs-group-title small {
+  font-size: 13px !important;
+  color: #999999 !important;
+  font-weight: 400 !important;
+  margin-left: 6px !important;
+}
+
+.xhs-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+}
+
+.xhs-note-card {
+  display: flex !important;
+  gap: 14px !important;
+  padding: 12px !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  border: 1px solid #eeeeee !important;
+  text-decoration: none !important;
+  color: inherit !important;
+  transition: box-shadow 0.2s, transform 0.2s !important;
+  contain: layout paint style !important;
+}
+
+.xhs-note-card:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+  transform: translateY(-1px) !important;
+}
+
+.xhs-note-cover {
+  width: 140px !important;
+  height: 100px !important;
+  flex-shrink: 0 !important;
+  border-radius: 8px !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-color: #f5f5f5 !important;
+}
+
+.xhs-note-body {
+  flex: 1 !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+.xhs-note-title {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: #111111 !important;
+  line-height: 1.4 !important;
+}
+
+.xhs-note-desc {
+  font-size: 13px !important;
+  color: #666666 !important;
+  line-height: 1.5 !important;
+}
+
+.xhs-note-meta {
+  font-size: 12px !important;
+  color: #999999 !important;
+  display: flex !important;
+  gap: 12px !important;
+}
